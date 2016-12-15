@@ -292,7 +292,7 @@ private:
   *
   * \return Returns true when the configuration could be applied without modification.
   */
-  bool setExternalTrigger(bool &enable, std::string &mode, std::string &source, int32_t &parameter, double &delay, bool &polarityHigh);
+  bool setExternalTrigger(bool &enable, std::string &mode, std::string &source, int32_t &parameter, double &delay, bool polarityHigh);
 
   /*!
   * \brief Will set the external strobe of the camera.
@@ -309,7 +309,7 @@ private:
   *
   * \return Returns true when the configuration could be applied without modification.
   */
-  bool setExternalStrobe(bool &enable, const std::string &dest, double &duration, double &delay, bool &polarityHigh);
+  bool setExternalStrobe(bool &enable, const std::string &dest, double &duration, double &delay, bool polarityHigh);
 
   /*!
   * \brief Will autoconfigure the packet size of the GigECamera with the given GUID.

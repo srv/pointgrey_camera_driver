@@ -101,9 +101,6 @@ private:
       wb_red_ = config.white_balance_red;
 
       // Store CameraInfo binning information
-      binning_x_ = 1;
-      binning_y_ = 1;
-      /*
       if(config.video_mode == "640x480_mono8" || config.video_mode == "format7_mode1")
       {
         binning_x_ = 2;
@@ -116,10 +113,9 @@ private:
       }
       else
       {
-        binning_x_ = 0;
-        binning_y_ = 0;
+        binning_x_ = 1;
+        binning_y_ = 1;
       }
-      */
 
       // Store CameraInfo RegionOfInterest information
       if(config.video_mode == "format7_mode0" || config.video_mode == "format7_mode1" || config.video_mode == "format7_mode2")
@@ -154,7 +150,8 @@ private:
   void connectCb()
   {
     NODELET_DEBUG("Connect callback!");
-    boost::mutex::scoped_lock scopedLock(connect_mutex_); // Grab the mutex.  Wait until we're done initializing before letting this function through.
+    // Grab the mutex.  Wait until we're done initializing before letting this function through.
+    boost::mutex::scoped_lock scopedLock(connect_mutex_);
     // Check if we should disconnect (there are 0 subscribers to our data)
     if(it_pub_.getNumSubscribers() == 0 && pub_->getPublisher().getNumSubscribers() == 0)
     {
@@ -197,7 +194,7 @@ private:
   }
 
   /*!
-  * \brief Serves as a psuedo constructor for nodelets.
+  * \brief Serves as a pseudo constructor for nodelets.
   *
   * This function needs to do the MINIMUM amount of work to get the nodelet running.  Nodelets should not call blocking functions here.
   */
@@ -288,10 +285,11 @@ private:
   }
 
   /*!
-  * \brief Function for the boost::thread to grabImages and publish them.
-  *
-  * This function continues until the thread is interupted.  Responsible for getting sensor_msgs::Image and publishing them.
-  */
+   * \brief Function for the boost::thread to grabImages and publish them.
+   *
+   * This function continues until the thread is interrupted.
+   * Responsible for getting sensor_msgs::Image and publishing them.
+   */
   void devicePoll()
   {
     enum State
@@ -458,6 +456,7 @@ private:
             // Publish the full message
             pub_->publish(wfov_image);
 
+
             // Publish the message using standard image transport
             if(it_pub_.getNumSubscribers() > 0)
             {
@@ -472,7 +471,6 @@ private:
           catch(std::runtime_error& e)
           {
             NODELET_ERROR("%s", e.what());
-
             state = ERROR;
           }
 

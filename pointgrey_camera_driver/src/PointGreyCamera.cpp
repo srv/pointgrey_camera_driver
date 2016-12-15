@@ -111,17 +111,6 @@ bool PointGreyCamera::setNewConfiguration(pointgrey_camera_driver::PointGreyConf
   // Set gain
   retVal &= PointGreyCamera::setProperty(GAIN, config.auto_gain, config.gain);
 
-  // Set pan
-  unsigned int pan = config.pan;
-  unsigned int not_used = 0;
-  retVal &= PointGreyCamera::setProperty(PAN, false, pan, not_used);
-  config.pan = pan;
-
-  // Set tilt
-  unsigned int tilt = config.tilt;
-  retVal &= PointGreyCamera::setProperty(TILT, false, tilt, not_used);
-  config.tilt = tilt;
-
   // Set brightness
   retVal &= PointGreyCamera::setProperty(BRIGHTNESS, false, config.brightness);
 
@@ -136,34 +125,18 @@ bool PointGreyCamera::setNewConfiguration(pointgrey_camera_driver::PointGreyConf
   config.white_balance_red = red;
 
   // Set trigger
-  switch (config.trigger_polarity)
-  {
-    case pointgrey_camera_driver::PointGrey_Low:
-    case pointgrey_camera_driver::PointGrey_High:
-      {
-      bool temp = config.trigger_polarity;
-      retVal &= PointGreyCamera::setExternalTrigger(config.enable_trigger, config.trigger_mode, config.trigger_source, config.trigger_parameter, config.trigger_delay, temp);
-      config.strobe1_polarity = temp;
-      }
-      break;
-    default:
-      retVal &= false;
-  }
-
+  retVal &= PointGreyCamera::setExternalTrigger(config.enable_trigger,
+                                                config.trigger_mode,
+                                                config.trigger_source,
+                                                config.trigger_parameter,
+                                                config.trigger_delay,
+                                                config.trigger_polarity);
   // Set strobe
-  switch (config.strobe1_polarity)
-  {
-    case pointgrey_camera_driver::PointGrey_Low:
-    case pointgrey_camera_driver::PointGrey_High:
-      {
-      bool temp = config.strobe1_polarity;
-      retVal &= PointGreyCamera::setExternalStrobe(config.enable_strobe1, pointgrey_camera_driver::PointGrey_GPIO1, config.strobe1_duration, config.strobe1_delay, temp);
-      config.strobe1_polarity = temp;
-      }
-      break;
-    default:
-      retVal &= false;
-  }
+  retVal &= PointGreyCamera::setExternalStrobe(config.enable_strobe,
+                                               config.strobe_source,
+                                               config.strobe_duration,
+                                               config.strobe_delay,
+                                               config.strobe_polarity);
 
   return retVal;
 }
@@ -639,11 +612,16 @@ static int sourceNumberFromGpioName(const std::string s)
   else
   {
     // Unrecognized pin
+    std::cout << "[ERROR]: Unrecognized pin" << std::endl;
     return -1;
   }
 }
 
-bool PointGreyCamera::setExternalStrobe(bool &enable, const std::string &dest, double &duration, double &delay, bool &polarityHigh)
+bool PointGreyCamera::setExternalStrobe(bool &enable,
+                                        const std::string &dest,
+                                        double &duration,
+                                        double &delay,
+                                        bool polarityHigh)
 {
   // return true if we can set values as desired.
   bool retVal = true;
@@ -654,6 +632,7 @@ bool PointGreyCamera::setExternalStrobe(bool &enable, const std::string &dest, d
   if (pin < 0)
   {
     // Unrecognized source
+    std::cout << "[ERROR]: Unrecognized strobe source" << std::endl;
     return false;
   }
   // Check for external trigger support
@@ -683,12 +662,16 @@ bool PointGreyCamera::setExternalStrobe(bool &enable, const std::string &dest, d
   PointGreyCamera::handleError("PointGreyCamera::setExternalStrobe Could not get strobe control.", error);
   delay = strobeControl.delay;
   enable = strobeControl.onOff;
-  polarityHigh = strobeControl.polarity;
 
   return retVal;
 }
 
-bool PointGreyCamera::setExternalTrigger(bool &enable, std::string &mode, std::string &source, int32_t &parameter, double &delay, bool &polarityHigh)
+bool PointGreyCamera::setExternalTrigger(bool &enable,
+                                         std::string &mode,
+                                         std::string &source,
+                                         int32_t &parameter,
+                                         double &delay,
+                                         bool polarityHigh)
 {
   // return true if we can set values as desired.
   bool retVal = true;
@@ -729,6 +712,7 @@ bool PointGreyCamera::setExternalTrigger(bool &enable, std::string &mode, std::s
   else
   {
     // Unrecognized mode
+    std::cout << "[ERROR]: Unrecognized Trigger mode" << std::endl;
     triggerMode.mode = 0;
     mode = "mode0";
     retVal &= false;
@@ -743,6 +727,7 @@ bool PointGreyCamera::setExternalTrigger(bool &enable, std::string &mode, std::s
   if (pin < 0)
   {
     // Unrecognized source
+    std::cout << "[ERROR]: Unrecognized Trigger source" << std::endl;
     triggerMode.source = 0;
     source = "gpio0";
     retVal &= false;
