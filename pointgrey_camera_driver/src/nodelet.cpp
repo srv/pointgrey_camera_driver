@@ -432,7 +432,7 @@ private:
             wfov_image->white_balance_blue = wb_blue_;
             wfov_image->white_balance_red = wb_red_;
 
-            wfov_image->temperature = pg_.getCameraTemperature();
+            wfov_image->temperature = -1.0; //pg_.getCameraTemperature();
 
             ros::Time time = ros::Time::now();
             wfov_image->header.stamp = time;
