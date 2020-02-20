@@ -268,6 +268,8 @@ private:
     pnh.param<std::string>("camera_info_url", camera_info_url, "");
     // Get the desired frame_id, set to 'camera' if not found
     pnh.param<std::string>("frame_id", frame_id_, "camera");
+    // Get flip options
+    pnh.param<bool>("flip", flip_, false);
     // Do not call the connectCb function until after we are done initializing.
     boost::mutex::scoped_lock scopedLock(connect_mutex_);
 
@@ -479,7 +481,7 @@ private:
             wfov_camera_msgs::WFOVImagePtr wfov_image(new wfov_camera_msgs::WFOVImage);
             // Get the image from the camera library
             NODELET_DEBUG("Starting a new grab from camera.");
-            pg_.grabImage(wfov_image->image, frame_id_);
+            pg_.grabImage(wfov_image->image, frame_id_, flip_);
 
             // Set other values
             wfov_image->header.frame_id = frame_id_;
@@ -592,6 +594,7 @@ private:
   size_t roi_height_; ///< Camera Info ROI height
   size_t roi_width_; ///< Camera Info ROI width
   bool do_rectify_; ///< Whether or not to rectify as if part of an image.  Set to false if whole image, and true if in ROI mode.
+  bool flip_;
 
   // For GigE cameras:
   /// If true, GigE packet size is automatically determined, otherwise packet_size_ is used:

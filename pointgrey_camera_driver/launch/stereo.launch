@@ -3,11 +3,13 @@
   <arg name="camera_name" default="camera" />
   <arg name="frame_rate" default="15" />
 
-  <arg name="left_camera_serial" default="0" />
+  <arg name="left_camera_serial" default="16401229" />
   <arg name="left_camera_calibrated" default="0" />
+  <arg name="left_camera_flip" default="true" />
 
-  <arg name="right_camera_serial" default="0" />
+  <arg name="right_camera_serial" default="16401228" />
   <arg name="right_camera_calibrated" default="0" />
+  <arg name="right_camera_flip" default="false" />
 
   <group ns="$(arg camera_name)" >
     <group ns="left" >
@@ -18,6 +20,7 @@
             args="load pointgrey_camera_driver/PointGreyCameraNodelet camera_nodelet_manager" >
         <param name="frame_id" value="camera_left" />
         <param name="serial" value="$(arg left_camera_serial)" />
+        <param name="flip" value="$(arg left_camera_flip)" />
 
         <!-- When unspecified, the driver will use the default framerate as given by the
              camera itself. Use this parameter to override that value for cameras capable of
@@ -41,6 +44,7 @@
             args="load pointgrey_camera_driver/PointGreyCameraNodelet camera_nodelet_manager" >
         <param name="frame_id" value="camera_right" />
         <param name="serial" value="$(arg right_camera_serial)" />
+        <param name="flip" value="$(arg right_camera_flip)" />
 
         <!-- When unspecified, the driver will use the default framerate as given by the
              camera itself. Use this parameter to override that value for cameras capable of

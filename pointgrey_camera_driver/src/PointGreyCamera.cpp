@@ -976,7 +976,7 @@ bool PointGreyCamera::stop()
   return false;
 }
 
-void PointGreyCamera::grabImage(sensor_msgs::Image &image, const std::string &frame_id)
+void PointGreyCamera::grabImage(sensor_msgs::Image &image, const std::string &frame_id, bool &flip)
 {
   boost::mutex::scoped_lock scopedLock(mutex_);
   if(cam_.IsConnected() && captureRunning_)
@@ -1027,7 +1027,8 @@ void PointGreyCamera::grabImage(sensor_msgs::Image &image, const std::string &fr
           imageEncoding = sensor_msgs::image_encodings::BAYER_RGGB8;
           break;
         case GRBG:
-          imageEncoding = sensor_msgs::image_encodings::BAYER_GRBG8;
+          imageEncoding = sensor_msgs::image_encodings::BAYER_RGGB8;//GRBG8;
+          if(flip == true){imageEncoding = sensor_msgs::image_encodings::BAYER_BGGR8;}
           break;
         case GBRG:
           imageEncoding = sensor_msgs::image_encodings::BAYER_GBRG8;
@@ -1054,7 +1055,51 @@ void PointGreyCamera::grabImage(sensor_msgs::Image &image, const std::string &fr
       }
     }
 
-    fillImage(image, imageEncoding, rawImage.GetRows(), rawImage.GetCols(), rawImage.GetStride(), rawImage.GetData());
+    size_t rows = rawImage.GetRows();
+    size_t cols = rawImage.GetCols();
+    //ROS_INFO("ROWS: %zu.", rows);
+    //ROS_INFO("COLS: %zu.", cols);
+
+    uint8_t* raw_data = rawImage.GetData();
+
+
+    //ROS_INFO("raw_data before: %p", raw_data);
+
+    if(flip == true)
+    {
+      for(size_t i = 0; i < rawImage.GetRows()/2; i++)  // Rows
+      {
+      for(size_t j = 0; j < rawImage.GetCols(); j++) 
+        {
+          size_t idx1  = i * rawImage.GetCols() + j;
+          size_t idx2 =  (rawImage.GetRows()-i-1) * rawImage.GetCols() + j;
+
+          uint8_t aux = raw_data[idx2];
+          raw_data[idx2] = raw_data[idx1];
+          raw_data[idx1] = aux;
+        }
+      }
+    }
+   
+    if(flip == false)
+    {
+      for(size_t i = 0; i < rawImage.GetRows(); i++)  // Rows
+      {
+      for(size_t j = 0; j < rawImage.GetCols()/2; j++) 
+        {
+          size_t idx1  = i * rawImage.GetCols() + j;
+          size_t idx2 =  i * rawImage.GetCols() + rawImage.GetCols() - j -1;
+
+          uint8_t aux = raw_data[idx2];
+          raw_data[idx2] = raw_data[idx1];
+          raw_data[idx1] = aux;
+        }
+      }
+    }
+
+    //ROS_INFO("raw_data after: %p", raw_data);
+
+    fillImage(image, imageEncoding, rawImage.GetRows(), rawImage.GetCols(), rawImage.GetStride(), raw_data);
     image.header.frame_id = frame_id;
   }
   else if(cam_.IsConnected())

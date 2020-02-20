@@ -116,7 +116,7 @@ public:
   * \param image sensor_msgs::Image that will be filled with the image currently in the buffer.
   * \param frame_id The name of the optical frame of the camera.
   */
-  void grabImage(sensor_msgs::Image &image, const std::string &frame_id);
+  void grabImage(sensor_msgs::Image &image, const std::string &frame_id, bool &flip);
 
   void grabStereoImage(sensor_msgs::Image &image, const std::string &frame_id, sensor_msgs::Image &second_image, const std::string &second_frame_id);
 
