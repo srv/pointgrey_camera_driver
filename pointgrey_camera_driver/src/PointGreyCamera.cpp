@@ -1025,12 +1025,12 @@ void PointGreyCamera::grabImage(sensor_msgs::Image &image, const std::string &fr
         {
         case RGGB:
           imageEncoding = sensor_msgs::image_encodings::BAYER_RGGB8;
+          if(flip == 1){imageEncoding = sensor_msgs::image_encodings::BAYER_GRBG8;}
+          if(flip == 2){imageEncoding = sensor_msgs::image_encodings::BAYER_GBRG8;}
+          if(flip == 3){imageEncoding = sensor_msgs::image_encodings::BAYER_BGGR8;}
           break;
         case GRBG:
           imageEncoding = sensor_msgs::image_encodings::BAYER_GRBG8;
-          if(flip == 1){imageEncoding = sensor_msgs::image_encodings::BAYER_RGGB8;}
-          if(flip == 2){imageEncoding = sensor_msgs::image_encodings::BAYER_BGGR8;}
-          if(flip == 3){imageEncoding = sensor_msgs::image_encodings::BAYER_BGGR8;}
           break;
         case GBRG:
           imageEncoding = sensor_msgs::image_encodings::BAYER_GBRG8;
