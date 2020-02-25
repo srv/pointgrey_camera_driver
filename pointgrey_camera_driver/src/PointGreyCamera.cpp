@@ -976,7 +976,7 @@ bool PointGreyCamera::stop()
   return false;
 }
 
-void PointGreyCamera::grabImage(sensor_msgs::Image &image, const std::string &frame_id, bool &flip)
+void PointGreyCamera::grabImage(sensor_msgs::Image &image, const std::string &frame_id, int &flip)
 {
   boost::mutex::scoped_lock scopedLock(mutex_);
   if(cam_.IsConnected() && captureRunning_)
@@ -1025,10 +1025,12 @@ void PointGreyCamera::grabImage(sensor_msgs::Image &image, const std::string &fr
         {
         case RGGB:
           imageEncoding = sensor_msgs::image_encodings::BAYER_RGGB8;
+          if(flip == 1){imageEncoding = sensor_msgs::image_encodings::BAYER_GRBG8;}
+          if(flip == 2){imageEncoding = sensor_msgs::image_encodings::BAYER_GBRG8;}
+          if(flip == 3){imageEncoding = sensor_msgs::image_encodings::BAYER_BGGR8;}
           break;
         case GRBG:
-          imageEncoding = sensor_msgs::image_encodings::BAYER_RGGB8;//GRBG8;
-          if(flip == true){imageEncoding = sensor_msgs::image_encodings::BAYER_BGGR8;}
+          imageEncoding = sensor_msgs::image_encodings::BAYER_GRBG8;
           break;
         case GBRG:
           imageEncoding = sensor_msgs::image_encodings::BAYER_GBRG8;
@@ -1065,7 +1067,7 @@ void PointGreyCamera::grabImage(sensor_msgs::Image &image, const std::string &fr
 
     //ROS_INFO("raw_data before: %p", raw_data);
 
-    if(flip == true)
+    if(flip == 2 || flip == 3)
     {
       for(size_t i = 0; i < rawImage.GetRows()/2; i++)  // Rows
       {
@@ -1081,7 +1083,7 @@ void PointGreyCamera::grabImage(sensor_msgs::Image &image, const std::string &fr
       }
     }
    
-    if(flip == false)
+    if(flip == 1 || flip == 3)
     {
       for(size_t i = 0; i < rawImage.GetRows(); i++)  // Rows
       {

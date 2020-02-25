@@ -269,7 +269,7 @@ private:
     // Get the desired frame_id, set to 'camera' if not found
     pnh.param<std::string>("frame_id", frame_id_, "camera");
     // Get flip options
-    pnh.param<bool>("flip", flip_, false);
+    pnh.param<int>("flip", flip_, 0);
     // Do not call the connectCb function until after we are done initializing.
     boost::mutex::scoped_lock scopedLock(connect_mutex_);
 
@@ -594,7 +594,7 @@ private:
   size_t roi_height_; ///< Camera Info ROI height
   size_t roi_width_; ///< Camera Info ROI width
   bool do_rectify_; ///< Whether or not to rectify as if part of an image.  Set to false if whole image, and true if in ROI mode.
-  bool flip_;
+  int flip_;
 
   // For GigE cameras:
   /// If true, GigE packet size is automatically determined, otherwise packet_size_ is used:
