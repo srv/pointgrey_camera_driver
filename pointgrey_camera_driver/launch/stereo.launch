@@ -4,6 +4,7 @@
   <arg name="frame_rate" default="15" />
 
   <arg name="left_camera_serial" default="16401228" />
+<<<<<<< HEAD
   <arg name="left_camera_calibrated" default="1" />
   <arg name="left_camera_flip" default="3" />         <!-- 0- no flip; 1- H flip, 2- V flip, 3 HV flip -->
 
@@ -14,6 +15,18 @@
   <group ns="$(arg camera_name)" >
     <group ns="left" >
       <node pkg="nodelet" type="nodelet" name="camera_nodelet_manager" args="manager" output="screen"/>
+=======
+  <arg name="left_camera_calibrated" default="0" />
+  <arg name="left_camera_flip" default="3" /> <!-- 0- no flip; 1- H flip, 2- V flip, 3 HV flip -->
+
+  <arg name="right_camera_serial" default="16401229" />
+  <arg name="right_camera_calibrated" default="0" />
+  <arg name="right_camera_flip" default="0" /> <!-- 0- no flip; 1- H flip, 2- V flip, 3 HV flip -->
+
+  <group ns="$(arg camera_name)" >
+    <group ns="left" >
+      <node pkg="nodelet" type="nodelet" name="camera_nodelet_manager" args="manager" output="screen" />
+>>>>>>> dev_xiroi
 
       <!-- Both cameras are not loaded into one nodelet manager to avoid the namespacing issue. -->
       <node pkg="nodelet" type="nodelet" name="camera_nodelet" output="screen"
@@ -38,7 +51,11 @@
     </group>
 
     <group ns="right" >
+<<<<<<< HEAD
       <node pkg="nodelet" type="nodelet" name="camera_nodelet_manager" args="manager" output="screen"/>
+=======
+      <node pkg="nodelet" type="nodelet" name="camera_nodelet_manager" args="manager" output="screen" />
+>>>>>>> dev_xiroi
 
       <node pkg="nodelet" type="nodelet" name="camera_nodelet" output="screen"
             args="load pointgrey_camera_driver/PointGreyCameraNodelet camera_nodelet_manager" >

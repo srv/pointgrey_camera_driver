@@ -1024,7 +1024,12 @@ void PointGreyCamera::grabImage(sensor_msgs::Image &image, const std::string &fr
         switch(bayer_format)
         {
         case RGGB:
+<<<<<<< HEAD
           imageEncoding = sensor_msgs::image_encodings::BAYER_RGGB8;
+=======
+          // for Xiroi in this case from switch,  track if this changes
+          if(flip == 0){imageEncoding = sensor_msgs::image_encodings::BAYER_RGGB8;}
+>>>>>>> dev_xiroi
           if(flip == 1){imageEncoding = sensor_msgs::image_encodings::BAYER_GRBG8;}
           if(flip == 2){imageEncoding = sensor_msgs::image_encodings::BAYER_GBRG8;}
           if(flip == 3){imageEncoding = sensor_msgs::image_encodings::BAYER_BGGR8;}
