@@ -1,4 +1,31 @@
 pointgrey_camera_driver
+
+=======================
+
+FlyCapture2 Camera Selection 2.13.3.31
+
+call from .launch:
+
+  <group ns="$(arg base_topic)/left">
+    <include file="$(find pointgrey_camera_driver)/launch/camera.launch" >
+        <arg name="camera_serial" value="$(arg left_ID)" />
+        <arg name="camera_info_url" value="file://$(find cola2_xiroi)/config/cameras/$(arg camera)/CM3-U3-31S4C_$(arg left_ID)/calibration_$(arg calibration).yaml" />
+        <arg name="camera_flip" value="3" />
+    </include>
+    <rosparam command="load" file="$(find cola2_xiroi)/config/cameras/$(arg camera)/CM3-U3-31S4C_$(arg left_ID)/params.yaml" ns="camera_nodelet"/>
+  </group>
+
+
+
+flip:  	0 - no flip
+	1 - H flip
+	2 - V flip
+	3 - HV flip
+
+triggering: https://www.flir.com/support-center/iis/machine-vision/application-note/configuring-synchronized-capture-with-multiple-cameras
+
+
+
 =======================
 
 [![Build Status](https://travis-ci.org/ros-drivers/pointgrey_camera_driver.png?branch=master)](https://travis-ci.org/ros-drivers/pointgrey_camera_driver)
